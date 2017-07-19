@@ -16,6 +16,11 @@ Cameron Pittman, Udacity Course Developer
 cameron *at* udacity *dot* com
 */
 
+// *** Customised by Mike Hughes
+// Removed the background pizzas images feature as it is a dristracting UI
+// that seems to add no value and causes serveral performance issues.
+// Re implemented pizza resize slider also to be more performant.
+
 // As you may have realized, this website randomly generates pizzas.
 // Here are arrays of all possible pizza ingredients.
 var pizzaIngredients = {};
@@ -449,10 +454,26 @@ var resizePizzas = function(size) {
 
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
-    for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
-      var dx = determineDx(document.querySelectorAll(".randomPizzaContainer")[i], size);
-      var newwidth = (document.querySelectorAll(".randomPizzaContainer")[i].offsetWidth + dx) + 'px';
-      document.querySelectorAll(".randomPizzaContainer")[i].style.width = newwidth;
+    // *** Re implemented this function to avoid FSL. Commented out terrible code and only use the only 3 widths.
+    // for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
+    //   var dx = determineDx(document.querySelectorAll(".randomPizzaContainer")[i], size);
+    //   var newwidth = (document.querySelectorAll(".randomPizzaContainer")[i].offsetWidth + dx) + 'px';
+    //   document.querySelectorAll(".randomPizzaContainer")[i].style.width = newwidth;
+    // }
+    switch (size) {
+      case "1":
+        newWidth = 25;
+        break;
+      case "2":
+        newWidth = 33.333;
+        break;
+      case "3":
+        newWidth = 50;
+        break;
+    }
+    var allPizzas = document.querySelectorAll(".randomPizzaContainer");
+    for (i = 0; i < allPizzas.length; i++) {
+      allPizzas[i].style.width = newWidth + '%';
     }
   }
 
@@ -496,6 +517,7 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 // The following code for sliding background pizzas was pulled from Ilya's demo found at:
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
+// *** Commented out to stop updating background pizza positions on load or when scrolling
 // Moves the sliding background pizzas based on scroll position
 function updatePositions() {
   frame++;
@@ -517,22 +539,25 @@ function updatePositions() {
   }
 }
 
+// *** Commented out to stop updating background pizza positions on load or when scrolling
 // runs updatePositions on scroll
-window.addEventListener('scroll', updatePositions);
+// window.addEventListener('scroll', updatePositions);
 
+// *** Commented out to stop updating background pizza positions on load or when scrolling
 // Generates the sliding pizzas when the page loads.
-document.addEventListener('DOMContentLoaded', function() {
-  var cols = 8;
-  var s = 256;
-  for (var i = 0; i < 200; i++) {
-    var elem = document.createElement('img');
-    elem.className = 'mover';
-    elem.src = "images/pizza.png";
-    elem.style.height = "100px";
-    elem.style.width = "73.333px";
-    elem.basicLeft = (i % cols) * s;
-    elem.style.top = (Math.floor(i / cols) * s) + 'px';
-    document.querySelector("#movingPizzas1").appendChild(elem);
-  }
-  updatePositions();
-});
+// document.addEventListener('DOMContentLoaded', function() {
+//   var cols = 8;
+//   var s = 256;
+//   for (var i = 0; i < 200; i++) {
+//     var elem = document.createElement('img');
+//     elem.className = 'mover';
+//     elem.src = "images/pizza.png";
+//     elem.style.height = "100px";
+//     elem.style.width = "73.333px";
+//     elem.basicLeft = (i % cols) * s;
+//     elem.style.top = (Math.floor(i / cols) * s) + 'px';
+//     document.querySelector("#movingPizzas1").appendChild(elem);
+//   }
+
+//   updatePositions();
+// });

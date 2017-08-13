@@ -471,8 +471,7 @@ var resizePizzas = function(size) {
         newWidth = 50;
         break;
     }
-    // Use the more specific call to get elements by class and not all document elements
-    var allPizzas = document.getElementsByClassName("randomPizzaContainer");
+    var allPizzas = document.querySelectorAll(".randomPizzaContainer");
     for (i = 0; i < allPizzas.length; i++) {
       allPizzas[i].style.width = newWidth + '%';
     }
@@ -490,10 +489,8 @@ var resizePizzas = function(size) {
 window.performance.mark("mark_start_generating"); // collect timing data
 
 // This for-loop actually creates and appends all of the pizzas when the page loads
-// get document elements by ID which does not chnage within the loop so do prior to stop
-// constant querying the DOM wwithin the loop
-var pizzasDiv = document.getElementById("randomPizzas");
 for (var i = 2; i < 100; i++) {
+  var pizzasDiv = document.getElementById("randomPizzas");
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 

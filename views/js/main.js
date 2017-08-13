@@ -520,16 +520,57 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 // The following code for sliding background pizzas was pulled from Ilya's demo found at:
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
-// *** Commented out to stop updating background pizza positions on load or when scrolling
 // Moves the sliding background pizzas based on scroll position
 function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
-  var items = document.querySelectorAll('.mover');
-  for (var i = 0; i < items.length; i++) {
-    var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
+  // var items = document.querySelectorAll('.mover');
+  // for (var i = 0; i < items.length; i++) {
+  //   var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
+  //   items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+  // }
+
+  // Specify elements by class name selector not querySelectorAll
+  var items = document.getElementsByClassName('mover');
+  var totalItems = items.length;
+  
+  var docBodScrollTop = document.body.scrollTop;
+  var size = 1250;
+  var calc = docBodScrollTop / size;
+  
+  var phase1 = Math.sin(calc + 0);
+  var phase2 = Math.sin(calc + 1);
+  var phase3 = Math.sin(calc + 2);
+  var phase4 = Math.sin(calc + 3);
+  var phase5 = Math.sin(calc + 4);
+  
+  var phase = 0;
+  var multi = 0;
+  for (var i = 0; i < totalItems; i++) {
+    switch (i%5) {
+      case 0:
+        phase = phase1;
+        break;
+      case 1:
+        phase = phase2;
+        break;
+      case 2:
+        phase = phase3;
+        break;
+      case 3:
+        phase = phase4;
+        break;
+      case 4:
+        phase = phase5;
+        break;
+    }
+    
+    // items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+
+    console.log("----");
+    console.log(phase, i, i%5, items[i].basicLeft);
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
@@ -549,14 +590,18 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  for (var i = 0; i < 200; i++) {
+  var maxMoving = ((screen.height * 2) / 256) * cols;
+  
+  for (var i = 0; i < maxMoving; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
     elem.style.height = "100px";
     elem.style.width = "73.333px";
     elem.basicLeft = (i % cols) * s;
+    // console.log('pizza element basicLeft = ' + elem.basicLeft);
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
+    console.log('pizza element style top = ' + elem.style.top);
     document.querySelector("#movingPizzas1").appendChild(elem);
   }
 

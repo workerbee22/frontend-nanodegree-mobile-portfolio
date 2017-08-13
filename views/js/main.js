@@ -525,57 +525,26 @@ function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
+  // *** original code
   // var items = document.querySelectorAll('.mover');
   // for (var i = 0; i < items.length; i++) {
   //   var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
   //   items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
   // }
 
-  //This var calculates the scrollTop before the loop so that there is no query to the DOM each time the loop runs:
-  var scrollPosition = document.body.scrollTop / 1250;
-
-
+  // Pull out of the loop as much as possible
+  var scrollTop = document.body.scrollTop;
   // Specify elements by class name selector not querySelectorAll
   var items = document.getElementsByClassName('mover');
   var totalItems = items.length;
-  
-  // var docBodScrollTop = document.body.scrollTop;
-  // var size = 1250;
-  // var calc = docBodScrollTop / size;
-  //
-  // var phase1 = Math.sin(calc + 0);
-  // var phase2 = Math.sin(calc + 1);
-  // var phase3 = Math.sin(calc + 2);
-  // var phase4 = Math.sin(calc + 3);
-  // var phase5 = Math.sin(calc + 4);
-  
-  // var phase = 0;
-  var multi = 0;
+  var phase = [];
+  // Get the 5 unique phase values, as there is only 5 and put them into array
+  for (var p = 0; p < 5; p++) {
+      phase.push(Math.sin(scrollTop / 1250 + p) * 100);
+  }
+  // make chnages to positions of pizzas whilst removing as much as possible from the loop
   for (var i = 0; i < totalItems; i++) {
-    var phase = Math.sin((scrollPosition) + (i % 5));
-    // switch (i%5) {
-    //   case 0:
-    //     phase = phase1;
-    //     break;
-    //   case 1:
-    //     phase = phase2;
-    //     break;
-    //   case 2:
-    //     phase = phase3;
-    //     break;
-    //   case 3:
-    //     phase = phase4;
-    //     break;
-    //   case 4:
-    //     phase = phase5;
-    //     break;
-    // }
-    
-    // items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
-    items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
-
-    // console.log("----");
-    // console.log(phase, i, i%5, items[i].basicLeft);
+      items[i].style.left = items[i].basicLeft + phase[i%5] + 'px';
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
@@ -595,8 +564,9 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  // var maxMoving = ((screen.height * 2) / 256) * cols;
-  var maxMoving = 20;
+  // Limit max pizzas required in the viewport becuase a fixed 200 not a good appraoch
+  var maxMoving = window.innerHeight / s * cols;
+  // console.log('max pizzas = ' + maxMoving);
   
   for (var i = 0; i < maxMoving; i++) {
     var elem = document.createElement('img');
@@ -607,7 +577,7 @@ document.addEventListener('DOMContentLoaded', function() {
     elem.basicLeft = (i % cols) * s;
     // console.log('pizza element basicLeft = ' + elem.basicLeft);
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
-    console.log('pizza element style top = ' + elem.style.top);
+    // console.log('pizza element style top = ' + elem.style.top);
     document.querySelector("#movingPizzas1").appendChild(elem);
   }
 

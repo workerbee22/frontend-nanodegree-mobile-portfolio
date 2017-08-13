@@ -531,46 +531,51 @@ function updatePositions() {
   //   items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
   // }
 
+  //This var calculates the scrollTop before the loop so that there is no query to the DOM each time the loop runs:
+  var scrollPosition = document.body.scrollTop / 1250;
+
+
   // Specify elements by class name selector not querySelectorAll
   var items = document.getElementsByClassName('mover');
   var totalItems = items.length;
   
-  var docBodScrollTop = document.body.scrollTop;
-  var size = 1250;
-  var calc = docBodScrollTop / size;
+  // var docBodScrollTop = document.body.scrollTop;
+  // var size = 1250;
+  // var calc = docBodScrollTop / size;
+  //
+  // var phase1 = Math.sin(calc + 0);
+  // var phase2 = Math.sin(calc + 1);
+  // var phase3 = Math.sin(calc + 2);
+  // var phase4 = Math.sin(calc + 3);
+  // var phase5 = Math.sin(calc + 4);
   
-  var phase1 = Math.sin(calc + 0);
-  var phase2 = Math.sin(calc + 1);
-  var phase3 = Math.sin(calc + 2);
-  var phase4 = Math.sin(calc + 3);
-  var phase5 = Math.sin(calc + 4);
-  
-  var phase = 0;
+  // var phase = 0;
   var multi = 0;
   for (var i = 0; i < totalItems; i++) {
-    switch (i%5) {
-      case 0:
-        phase = phase1;
-        break;
-      case 1:
-        phase = phase2;
-        break;
-      case 2:
-        phase = phase3;
-        break;
-      case 3:
-        phase = phase4;
-        break;
-      case 4:
-        phase = phase5;
-        break;
-    }
+    var phase = Math.sin((scrollPosition) + (i % 5));
+    // switch (i%5) {
+    //   case 0:
+    //     phase = phase1;
+    //     break;
+    //   case 1:
+    //     phase = phase2;
+    //     break;
+    //   case 2:
+    //     phase = phase3;
+    //     break;
+    //   case 3:
+    //     phase = phase4;
+    //     break;
+    //   case 4:
+    //     phase = phase5;
+    //     break;
+    // }
     
     // items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
 
-    console.log("----");
-    console.log(phase, i, i%5, items[i].basicLeft);
+    // console.log("----");
+    // console.log(phase, i, i%5, items[i].basicLeft);
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
@@ -590,7 +595,8 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  var maxMoving = ((screen.height * 2) / 256) * cols;
+  // var maxMoving = ((screen.height * 2) / 256) * cols;
+  var maxMoving = 20;
   
   for (var i = 0; i < maxMoving; i++) {
     var elem = document.createElement('img');
